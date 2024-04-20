@@ -1,0 +1,6 @@
+# solr_event.services.yml
+services:
+  solr_event.event_subscriber:
+    class: Drupal\solr_event\EventSubscriber\SolrEventSubscriber
+    tags:
+      - { name: event_subscriber }
