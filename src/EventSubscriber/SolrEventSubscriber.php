@@ -2,8 +2,8 @@
 
 namespace Drupal\solr_event\EventSubscriber;
 
-use Drupal\search_api\Event\IndexFieldsEvent;
-use Psr\Log\LoggerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\search_api_solr\Event\SearchApiSolrEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -13,8 +13,7 @@ class SolrEventSubscriber implements EventSubscriberInterface {
 
   protected $logger;
 
-  public function __construct(LoggerInterface $logger) {
-    $this->logger->info('getSubscribedEvents');
+  public function __construct(LoggerChannelInterface $logger) {
     $this->logger = $logger;
   }
 
@@ -22,21 +21,23 @@ class SolrEventSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-
-    $events['search_api.index_fields'][] = ['onIndexFields'];
+    $events[SearchApiSolrEvents::PRE_QUERY][] = ['onPreQuery'];
     return $events;
   }
 
   /**
-   * Manipulate data before indexing in Solr.
+   * Prepares a Solr search api query.
+   *
+   * @param \Drupal\search_api_solr\Event\PreQueryEvent $event
+   *   The search query event.
    */
-  public function onIndexFields(IndexFieldsEvent $event) {
+  public function onPreQuery(PreQueryEvent $event) {
+    $this->logger->info('Custom Solr event occurred (query modification).');
 
-    // $event->getEntity().
-    // $event->getFields().
-    // dpm($event);
-    $this->logger->info('Custom Solr event occurred.');
-
+    // Access the query objects.
+    // Drupal Search API query.
+    $search_api_query = $event->getSearchApiQuery();
+    $solarium_query = $event->getSolariumQuery();   // Underlying Solarium query.
   }
 
 }
