@@ -35,14 +35,12 @@ class SolrEventSubscriber implements EventSubscriberInterface {
   public function PreQuery(PreQueryEvent $event) {
     // $this->logger->info(__FILE__ . '::' . __LINE__);
     \Drupal::logger('my_module')->notice(__FILE__ . '::' . __LINE__);
-    
+
     $query = $event->getSearchApiQuery();
     
     $solarium_query = $event->getSolariumQuery();
-    // change tm_X3b_en_title and ss_field_order field names as per you solr field names.
-    // Searching the text "testing" in tm_X3b_en_title field and boosting the ss_field_order field
-    // having the value as "first".
-    $solarium_query->addParam("q",  "(tm_X3b_en_title:testing AND ss_field_order:first^5)");
+  
+    $solarium_query->addParam("q",  "( <PARAM> )");
   }
 
 }
