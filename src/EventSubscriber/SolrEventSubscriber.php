@@ -2,7 +2,7 @@
 
 namespace Drupal\solr_event\EventSubscriber;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\search_api_solr\Event\PreQueryEvent;
 use Drupal\search_api_solr\Event\SearchApiSolrEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -11,18 +11,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class SolrEventSubscriber implements EventSubscriberInterface {
 
-  protected $logger;
-
-  public function __construct(LoggerChannelInterface $logger) {
-    $this->logger = $logger;
-  }
+  // Protected $logger;
+  // Public function __construct(LoggerChannelInterface $logger) {
+  //   $this->logger->info(__FILE__ . '::' . __LINE__);
+  //   $this->logger = $logger;
+  // }.
 
   /**
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[SearchApiSolrEvents::PRE_QUERY][] = ['onPreQuery'];
-    return $events;
+    return [
+      SearchApiSolrEvents::PRE_QUERY => 'preQuery',
+    ];
   }
 
   /**
@@ -31,13 +32,17 @@ class SolrEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\search_api_solr\Event\PreQueryEvent $event
    *   The search query event.
    */
-  public function onPreQuery(PreQueryEvent $event) {
-    $this->logger->info('Custom Solr event occurred (query modification).');
-
-    // Access the query objects.
-    // Drupal Search API query.
-    $search_api_query = $event->getSearchApiQuery();
-    $solarium_query = $event->getSolariumQuery();   // Underlying Solarium query.
+  public function PreQuery(PreQueryEvent $event) {
+    // $this->logger->info(__FILE__ . '::' . __LINE__);
+    \Drupal::logger('my_module')->notice(__FILE__ . '::' . __LINE__);
+    
+    $query = $event->getSearchApiQuery();
+    
+    $solarium_query = $event->getSolariumQuery();
+    // change tm_X3b_en_title and ss_field_order field names as per you solr field names.
+    // Searching the text "testing" in tm_X3b_en_title field and boosting the ss_field_order field
+    // having the value as "first".
+    $solarium_query->addParam("q",  "(tm_X3b_en_title:testing AND ss_field_order:first^5)");
   }
 
 }
