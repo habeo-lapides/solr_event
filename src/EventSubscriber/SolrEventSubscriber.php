@@ -6,16 +6,12 @@ use Drupal\search_api_solr\Event\PreQueryEvent;
 use Drupal\search_api_solr\Event\SearchApiSolrEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+// Use Psr\Log\LoggerInterface;.
+
 /**
- *
+ * Pre-Query for SOLR search.
  */
 class SolrEventSubscriber implements EventSubscriberInterface {
-
-  // Protected $logger;
-  // Public function __construct(LoggerChannelInterface $logger) {
-  //   $this->logger->info(__FILE__ . '::' . __LINE__);
-  //   $this->logger = $logger;
-  // }.
 
   /**
    * {@inheritdoc}
@@ -33,14 +29,12 @@ class SolrEventSubscriber implements EventSubscriberInterface {
    *   The search query event.
    */
   public function PreQuery(PreQueryEvent $event) {
-    // $this->logger->info(__FILE__ . '::' . __LINE__);
-    \Drupal::logger('my_module')->notice(__FILE__ . '::' . __LINE__);
 
     $query = $event->getSearchApiQuery();
+    
+    \Drupal::logger('solr_event')->notice($query);
 
-    $solarium_query = $event->getSolariumQuery();
-
-    $solarium_query->addParam("q", "( <PARAM> )");
+    // $solarium_query = $event->getSolariumQuery();
   }
 
 }
