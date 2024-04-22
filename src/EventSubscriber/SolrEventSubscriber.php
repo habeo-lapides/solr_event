@@ -37,10 +37,10 @@ class SolrEventSubscriber implements EventSubscriberInterface {
     \Drupal::logger('my_module')->notice(__FILE__ . '::' . __LINE__);
 
     $query = $event->getSearchApiQuery();
-    
+
     $solarium_query = $event->getSolariumQuery();
-  
-    $solarium_query->addParam("q",  "( <PARAM> )");
+
+    $solarium_query->addParam("q", "( <PARAM> )");
   }
 
 }
