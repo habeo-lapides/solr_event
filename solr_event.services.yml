@@ -2,5 +2,6 @@
 services:
   solr_event.event_subscriber:
     class: Drupal\solr_event\EventSubscriber\SolrEventSubscriber
+    arguments: ['@file_system', '@file.repository']
     tags:
       - { name: event_subscriber }
